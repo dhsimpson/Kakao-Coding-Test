@@ -1,0 +1,37 @@
+#include <string>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+bool check[8];
+set<string> s;
+void bT(int depth,string str, vector<string> user_id,vector<string>banned_id){
+    if(depth == banned_id.size()){
+        sort(str.begin(),str.end());
+        s.insert(str);
+        return;
+    }
+    int blen = banned_id[depth].length();
+    for(int i=0;i<user_id.size();i++){
+        if(check[i])continue;
+        if(user_id[i].length() != blen) continue;
+        bool flag = true;
+        for(int j=0;j<blen;j++){
+            if(banned_id[depth][j] == '*')continue;
+            if(banned_id[depth][j] ==user_id[i][j])continue;
+            flag=false;break;
+        }
+        if(flag){
+            check[i]=true;
+            bT(depth+1,str+to_string(i),user_id,banned_id);
+            check[i]=false;
+        }
+    }
+}
+int solution(vector<string> user_id, vector<string> banned_id) {
+    int answer = 0;
+    bT(0,"",user_id,banned_id);
+    answer = s.size();
+    return answer;
+}
