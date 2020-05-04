@@ -1,0 +1,35 @@
+#include <string>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+vector<long long> solution(long long k, vector<long long> room_number) {
+    vector<long long> answer;
+    map<long long, long long> m;
+    long long L = room_number.size();
+    long long want;
+    long long temp;
+    for(int i=0;i<L;i++){
+        want = room_number[i];
+        if(m.find(want)==m.end()){
+            answer.push_back(want);
+            m.insert({want,want+1});
+        }else{
+            temp = want;
+            vector<long long> tv;
+            while(true){
+                tv.push_back(temp);
+                temp = m.find(temp)->second;
+                if(m.find(temp)==m.end()){
+                    answer.push_back(temp);
+                    m.insert({temp,temp+1});
+                    temp++;
+                    break;
+                }
+            }
+            for(int j=0;j<tv.size();j++)m.find(tv[j])->second = temp;
+        }
+    }
+    return answer;
+}
