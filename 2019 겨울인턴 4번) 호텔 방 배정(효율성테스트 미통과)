@@ -1,0 +1,23 @@
+#include <string>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+vector<long long> solution(long long k, vector<long long> room_number) {
+    vector<long long> answer;
+    set<long long> s;
+    long long L = room_number.size();
+    long long want;
+    for(int i=0;i<L;i++){
+        want = room_number[i];
+        while(true){
+            if(s.find(want)==s.end()){
+                answer.push_back(want);
+                s.insert(want);
+                break;
+            }else{want++;}
+        }
+    }
+    return answer;
+}
