@@ -1,0 +1,31 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+bool binary_search(const int& res,const int& k,const vector<int>& stones){
+    int cnt=0;
+    for(int i=0;i<stones.size();i++){
+        if(stones[i]>res){cnt=0;}
+        else{
+            cnt++;
+        }
+        if(cnt>=k){
+            return false;
+        }
+    }
+    return true;
+}
+int solution(vector<int> stones, int k) {
+    int answer = 0;
+    int first=1,last=200000000;
+    while(first<=last){
+        int mid = (first+last)/2;
+        if(binary_search(mid,k,stones)){
+            first=mid+1;
+        }else{
+            last=mid-1;
+        }
+    }
+    answer = first;
+    return answer;
+}
