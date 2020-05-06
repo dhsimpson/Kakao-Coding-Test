@@ -1,0 +1,74 @@
+#include<string>
+#include<vector>
+#define INF 1000
+using namespace std;
+
+int solution(string s) {
+	int answer = 0;
+	string cache = "";
+	string tempC = "";
+	string tt = "";
+	int len = s.length();
+	int temp = 0;
+	int cnt = 0;
+	int res = len;
+	bool flag = false;
+	cache = s;
+	for (int L = 1; L < len; L++) {
+		//if (L != 8)continue;
+		temp = 0;
+		cache = "";
+		tt = "";
+		for (int i = 0; i < len; i = i + L) {
+			flag = true;
+			//printf("%s, %d\n", s.substr(i, L).c_str(), L);
+			if (cache.length() == 0) {
+				cache = s.substr(i, L);
+				cnt = 1;
+				continue;
+			}
+			if (i + L > len) {
+				temp += L + (len - i);
+				if (cnt > 1) {
+					temp += to_string(cnt).length();
+					tt.append(to_string(cnt)).append(cache);//
+				}
+				if (res > temp)res = temp;
+				break;
+			}
+			tempC = s.substr(i, L);
+			for (int j = 0; j < L; j++) {
+				if (cache[j] != tempC[j]) {
+					cache = tempC;
+					flag = false;
+					temp += L;
+					if (cnt == 1) {
+					}
+					else {
+						temp += to_string(cnt).length();
+						tt.append(to_string(cnt));//
+					}
+					tt.append(cache);//
+					cnt = 1;
+					break;
+				}
+			}
+			if (flag) { cnt++; }
+			if (i + L == len) {
+				temp += L;
+				if (cnt == 1) {
+				}
+				else {
+					temp += to_string(cnt).length();
+					tt.append(to_string(cnt));//
+				}
+				tt.append(cache);//
+				//break;
+			}
+		}
+		//printf("현재 : %d , L : %d, temp : %s, chache : %s\n", temp,L,tt.c_str(),cache.c_str());
+		if (res > temp)res = temp;
+	}
+	answer = res;
+	return answer;
+}
