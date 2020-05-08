@@ -1,0 +1,80 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+bool solution(vector<vector<int>> key, vector<vector<int>> lock) {
+    int size = key.size();
+    int L = lock.size();
+    int homes = 0;
+    int keys = 0;
+    for(int i=0;i<L;i++){for(int j=0;j<L;j++){if(lock[i][j]==0)homes++;}}
+    for(int i=0;i<size;i++){for(int j=0;j<size;j++){if(key[i][j]==1)keys++;}}
+    if(homes>keys)return false;
+    if(homes==0)return true;
+    vector<vector<int>> key1(size, vector<int>(size,0));
+    for(int i=0;i<size;i++){for(int j=0;j<size;j++){key1[j][size-1-i] = key[i][j];}}
+    vector<vector<int>> key2(size, vector<int>(size,0));
+    for(int i=0;i<size;i++){for(int j=0;j<size;j++){key2[j][size-1-i] = key1[i][j];}}
+    vector<vector<int>> key3(size, vector<int>(size,0));
+    for(int i=0;i<size;i++){for(int j=0;j<size;j++){key3[j][size-1-i] = key2[i][j];}}
+    bool temp = true;
+    int isKey = 0;
+    
+    for(int i=-size;i<L;i++){
+        for(int j=-size;j<L;j++){
+            temp=true;
+            isKey = 0;
+            for(int y=0;y<size;y++){
+                if( !(0<=y+i && y+i<L) )continue;
+                for(int x=0;x<size;x++){
+                    if( !(0<=x+j && x+j<L))continue;
+                    if(lock[y+i][x+j]==1 && key[y][x] == 1){temp=false;break;}
+                    if(lock[y+i][x+j]==0 && key[y][x]==1)isKey++;
+                }
+                if(!temp)break;
+            }
+            if(isKey==homes)return true;
+            
+            temp=true;
+            isKey = 0;
+            for(int y=0;y<size;y++){
+                if( !(0<=y+i && y+i<L) )continue;
+                for(int x=0;x<size;x++){
+                    if( !(0<=x+j && x+j<L))continue;
+                    if(lock[y+i][x+j]==1 && key1[y][x] == 1){temp=false;break;}
+                    if(lock[y+i][x+j]==0 && key1[y][x]==1)isKey++;
+                }
+                if(!temp)break;
+            }
+            if(isKey==homes)return true;
+            temp=true;
+            isKey = 0;
+            for(int y=0;y<size;y++){
+                if( !(0<=y+i && y+i<L) )continue;
+                for(int x=0;x<size;x++){
+                    if( !(0<=x+j && x+j<L))continue;
+                    if(lock[y+i][x+j]==1 && key2[y][x] == 1){temp=false;break;}
+                    if(lock[y+i][x+j]==0 && key2[y][x]==1)isKey++;
+                }
+                if(!temp)break;
+            }
+            if(isKey==homes)return true;
+            temp=true;
+            isKey = 0;
+            for(int y=0;y<size;y++){
+                if( !(0<=y+i && y+i<L) )continue;
+                for(int x=0;x<size;x++){
+                    if( !(0<=x+j && x+j<L))continue;
+                    if(lock[y+i][x+j]==1 && key3[y][x] == 1){temp=false;break;}
+                    if(lock[y+i][x+j]==0 && key3[y][x]==1)isKey++;
+                }
+                if(!temp)break;
+            }
+            if(isKey==homes)return true;
+            
+        }
+    }
+    bool answer = false;
+    return answer;
+}
