@@ -1,0 +1,24 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+int solution(string arrangement) {
+    int answer = 0;
+    vector<int> v;
+    for(int i=0;i<arrangement.length();i++){
+        if(arrangement[i]=='('){
+            if(arrangement[i+1]==')'){
+                for(int j=0;j<v.size();j++)v[j]++;
+                i++;
+            }else{
+                v.push_back(1);
+            }
+        }else{
+            answer += v.back();
+            v.pop_back();
+        }
+    }
+    return answer;
+}
