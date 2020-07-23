@@ -1,0 +1,42 @@
+#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+int new_Max(int prio[], int max_p){
+    for(int i=max_p;i>0;i--){
+        if(prio[i]>0) return i;
+    }
+}
+
+int solution(vector<int> priorities, int location) {
+    int answer = 0;
+    int prio[10] = {0};
+    int max_p = 0;
+    queue<int> q;
+    
+    for (auto pri : priorities){
+        prio[pri]++;
+        max_p=max(max_p, pri); 
+        q.push(pri);
+    }
+    
+    while(true){
+        int front = q.front(); q.pop();
+        if(front==max_p){
+            answer++;
+            if(location==0) return answer;
+            else location--;
+            prio[max_p]--;
+            if(prio[max_p]==0) max_p = new_Max(prio, max_p);
+        }else{
+            q.push(front);
+            if(location==0) location = q.size()-1;
+            else location--;
+        }
+    }
+    
+    return answer;
+}
