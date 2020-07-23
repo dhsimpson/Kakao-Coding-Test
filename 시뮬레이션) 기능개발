@@ -1,0 +1,28 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+vector<int> solution(vector<int> progresses, vector<int> speeds) {
+    vector<int> answer;
+    int *days = new int[speeds.size()];
+    int funcs = 0;
+    for(int i=0;i<speeds.size();i++){
+        days[i] = (100-progresses[i])/speeds[i];
+        if((100-progresses[i])%speeds[i] != 0) days[i] += 1;
+    }
+    funcs = 1;
+    int max = days[0];
+    for(int i=1; i<speeds.size();i++){
+        if(max>=days[i]) funcs++;
+        else{
+            max = days[i];
+            answer.push_back(funcs);
+            funcs = 1;
+        }
+    }
+    if(funcs>0) answer.push_back(funcs);
+    
+    return answer;
+}
