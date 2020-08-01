@@ -1,0 +1,64 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream> 
+
+using namespace std;
+struct task{
+    long start,end;
+};
+bool compare(task a, task b){
+    if(a.end<b.end) return true;
+    else if (a.end>b.end) return false;
+    else return a.start<=b.start;
+}
+task preprocess(string line){
+    task res;
+    
+    long h = atoi(line.substr(11,2).c_str());
+    long m = atoi(line.substr(14,2).c_str());
+    long s = stod(line.substr(17,6).c_str())*1000;
+    string t = line.substr(24);
+    t.erase(t.length()-1);
+    long term = (long)(stod(t)*1000);
+    // cout<<"line : "<<line<<endl;
+    // cout<<"term : "<<term<<endl;
+    h *= 3600000;
+    m *= 60000;
+    res.end = h+m+s;
+    res.start = res.end - term + 1;
+    cout<<res.start<<" ~ "<<res.end<<endl;
+    return res;
+}
+int solution(vector<string> lines) {
+    // 데이터 준비 O(n)
+    int answer = 0;
+    vector<task> tasks;
+    
+    for (auto line: lines) tasks.push_back(preprocess(line));
+    // sort(tasks.begin(), tasks.end(), compare);
+    // 정답 찾기 O(n)
+    int point = 0;
+    answer++;
+    int mx = 1;
+    long left, right;
+    for(int i = 1;i < tasks.size(); i++){
+        left = tasks[i].start - 1000 + 1;
+        // cout<<"left : "<<left<<" tasks.end : "<<tasks[point].end<<endl; 
+        // if(left<=tasks[point].end) cout<<"화긴\n";
+        // else cout<<"차이 : "<<tasks[point].end - left<<endl;
+        if(left<=tasks[point].end) answer++;
+        else{
+            point++;
+            answer--;
+            while(point<i && !(left<=tasks[point].end)){
+                point++;
+                answer--;
+            }
+            answer++;
+        }
+        cout<<"이번에는 : "<<answer<<endl;
+        mx = max(mx, answer);
+    }
+    return mx;
+}
