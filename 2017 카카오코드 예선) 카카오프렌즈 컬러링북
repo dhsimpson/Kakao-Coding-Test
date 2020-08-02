@@ -1,0 +1,53 @@
+#include <vector>
+#include <queue>
+#include <iostream>
+#include <algorithm>
+
+#define MAX 101
+
+using namespace std;
+
+int x[] = {-1,0,1,0};
+int y[] = {0,-1,0,1};
+
+int bfs(int m,int n, int i, int j, vector<vector<int>> picture, vector<vector<bool>> &check){
+    int cnt = 1;
+    int color = picture[i][j];
+    queue<pair<int, int>> q;
+    q.push({i,j});
+    while(!q.empty()){
+        pair<int,int> pt = q.front();
+        q.pop();
+        for(int k=0;k<4;k++){
+            int yi = pt.first + y[k];
+            int xj = pt.second + x[k];
+            if(0<=yi && yi<m &&0<=xj && xj<n && picture[yi][xj]==color && !check[yi][xj]){
+                check[yi][xj] = true;
+                q.push({yi,xj});
+                cnt++;
+            }
+        }
+    }
+    return cnt;
+}
+// 전역 변수를 정의할 경우 함수 내에 초기화 코드를 꼭 작성해주세요. <-이부분이 중요했음. check 배열을 전역으로 할 땐 solution 함수 내에 선언해야 함
+vector<int> solution(int m, int n, vector<vector<int>> picture) {
+    vector<vector<bool>> check(MAX, vector<bool> (MAX, false));
+    int number_of_area = 0;
+    int max_size_of_one_area = 0;
+    
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(picture[i][j]!=0 && !check[i][j]){
+                number_of_area++;
+                check[i][j] = true;
+                max_size_of_one_area = max(bfs(m, n, i, j, picture, check),max_size_of_one_area);
+            }
+        }
+    }
+    
+    vector<int> answer(2);
+    answer[0] = number_of_area;
+    answer[1] = max_size_of_one_area;
+    return answer;
+}
