@@ -1,0 +1,79 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+vector<int> weak;
+vector<int> dist;
+int n;
+struct point{
+    bool state = false;
+    int pt = 0;
+    int dist = 0;
+};
+void refresh(vector<bool> &points){
+    for(auto w : weak)points[w] = true;
+}
+bool is_match(vector<point> check,vector<bool> &points){
+    // for(auto point : check){
+    //     cout<<"시작점 : "<<point.pt<<"친구능률 : "<<point.dist<<endl;
+    // }
+    for(auto point : check){
+        if(point.state){
+            int ds = point.dist;
+            points[point.pt] = false;
+            for(int i=point.pt+1;ds>0;){
+                if(i==n) i=0;
+                else{
+                    points[i] = false;
+                    ds--;
+                    i++;
+                }
+            }
+        }
+    }
+    int cnt = 0;
+    for(auto pt : points){
+        if(pt) cnt++;
+        // if(pt) return false;
+    }
+    // cout<<cnt<<endl;
+    if(cnt>0)return false;
+    return true;
+}
+bool backT(vector<point> &check,vector<bool> &points,int i,int limit){
+    // dist[i] 번째 친구를 배치하자
+    if(i==limit){
+        // 검사 후 flag 체크하고 리턴
+        refresh(points);
+        if(is_match(check,points))return true;
+        else return false;
+    }else{
+        for(int s=0;s<check.size();s++){
+            if(!check[s].state){
+                check[s].state = true; check[s].pt = weak[s]; check[s].dist = dist[i+1];
+                if(backT(check,points,i+1,limit)) return true;
+                check[s].state = false; check[s].pt = 0; check[s].dist = 0;
+            }
+        }
+    }
+    return false;
+}
+
+int solution(int N, vector<int> WEAK, vector<int> DIST) {
+    n = N; weak = WEAK; dist = DIST;
+    
+    vector<point> check(weak.size());
+    vector<bool> points(n,false);
+    
+    reverse(dist.begin(),dist.end());
+    for(int i=0;i<dist.size();i++){
+        // weak 의 지점 별로 backT 하면서 i 개수만큼 친구들을 배치함
+        for(int s=0;s<check.size();s++){
+            check[s].state = true; check[s].pt = weak[s]; check[s].dist = dist[i];
+            if(backT(check,points,0,i))return i+1;
+            check[s].state = false; check[s].pt = 0; check[s].dist = 0;
+        }
+    }
+    return -1;
+}
