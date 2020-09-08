@@ -1,0 +1,60 @@
+#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+struct car{
+    int y,x,cost,dir;
+    car(int _y,int _x,int _cost,int _dir){
+        y=_y;x=_x;cost=_cost;dir=_dir;
+    }
+};
+void BFS(vector<vector<int>> board, int &answer){
+    int len = board.size();
+    // 상우하좌
+    int x[] = {0,1,0,-1};
+    int y[] = {-1,0,1,0};
+    // board의 각 지점 별로 상하좌우 에서 온 경주로 값이 더 큰지를 check
+    vector<vector<vector<int>>> check( len, vector<vector<int>>( len, vector<int>( 4,0 ) ) );
+    queue<car> q;
+    // 처음엔 방향이 아랫쪽 & 오른쪽 하나씩 있음
+    q.push(car(0,0,0,1));
+    q.push(car(0,0,0,2));
+    while(!q.empty()){
+        car c = q.front(); q.pop();
+        if(c.y==len-1 && c.x==len-1){
+            if(answer==-1 || answer>c.cost) {
+                answer=c.cost;
+            }
+            continue;
+        }
+        for(int i=0; i<4; i++){
+            int nx = c.x+x[i];
+            int ny = c.y+y[i];
+            // 범위 벗어나거나 | 벽이거나 | 반대 방향에서 왔다면 취소
+            if( 0>nx || nx>=len || 0>ny || ny>=len || board[ny][nx]==1 || abs(i-c.dir)==2) continue;
+            // 직선만
+            if(abs(c.dir-i)%2 ==0){
+                if(check[ny][nx][i]==0 || check[ny][nx][i]>c.cost+100){
+                    check[ny][nx][i]=c.cost+100;
+                    q.push(car(ny,nx,c.cost+100,i));
+                }
+            }
+            // 코너 추가
+            else{
+                if(check[ny][nx][i]==0 || check[ny][nx][i]>c.cost+600){
+                    check[ny][nx][i]=c.cost+600;
+                    q.push(car(ny,nx,c.cost+600,i));
+                }
+            }
+        }
+    }
+}
+int solution(vector<vector<int>> board) {
+    int answer = -1;
+    // car c = car(1,1,1,1);
+    BFS(board,answer);
+    return answer;
+}
