@@ -1,0 +1,56 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+#include <queue>
+#define hour 60
+#define First 540 // 첫 셔틀버스 도착 시간 
+using namespace std;
+
+string solution(int n, int t, int m, vector<string> timetable) {
+    string answer = "";
+    // v 에 시간순서로 넣은 후 q에 옮김
+    vector<int> v;
+    queue<int> q;
+    for(auto time : timetable){
+        int h = atoi(time.substr(0,2).c_str());
+        int m = atoi(time.substr(3,2).c_str());
+        v.push_back(h*hour+m);
+    }
+    sort(v.begin(),v.end());
+    for(auto time : v){q.push(time);}
+    
+    int now = First-t;
+    int people = 0;
+    int kone = 0;
+    string k_h,k_m;// 콘이 도착할 시간과 분
+    for(int i=1;i<=n;i++){
+        now += t;
+        people = 0;
+        while(true){
+            if(q.empty())break;
+            int f = q.front();
+            if(f>now)break;
+            q.pop(); people++;
+            // 이번 버스가 마지막이고, 꽉 찰것 같다면 콘은 그 사람보다 1분 일찍
+            if(i==n&&people==m){
+                kone = f-1;
+                k_h = to_string(kone/hour);
+                k_m = to_string(kone%hour);
+                if(k_h.length()==1) k_h = "0"+k_h;
+                if(k_m.length()==1) k_m = "0"+k_m;
+                
+                return k_h+":"+k_m;
+            }
+            if(people==m)break;
+        }
+    }
+    // 마지막 버스까지 콘의 자리가 남았다면 마지막 버스 도착시간에
+    kone = now;
+    k_h = to_string(kone/hour);
+    k_m = to_string(kone%hour);
+    if(k_h.length()==1) k_h = "0"+k_h;
+    if(k_m.length()==1) k_m = "0"+k_m;
+                
+    return k_h+":"+k_m;
+}
